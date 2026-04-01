@@ -1,0 +1,16 @@
+deployment:
+  label: provider
+
+service:
+  apiPort: 19191
+  controlPort: 19192
+  managementPort: 19193
+  protocolPort: 19194
+  publicPort: 19291
+
+ingress:
+  tlsSecretName: provider-simpl-backend-tls
+
+# it would be better to move those to vault in the future or use sops encryption
+env:
+  edcIdsId: "urn:connector:provider"

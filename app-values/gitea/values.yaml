@@ -1,0 +1,35 @@
+service:
+  http:
+    type: ClusterIP
+    port: 3000
+redis-cluster:
+  enabled: false
+redis:
+  enabled: false
+postgresql:
+  enabled: false
+postgresql-ha:
+  enabled: false
+persistence:
+  enabled: true
+  #  mount: true
+  #create: false
+  #claimName: gitea-pvc
+  storageClass: csi-cinder-high-speed
+  size: 11Gi
+gitea:
+  config:
+    APP_NAME: "Provisioner GIT Server"
+    repository:
+      ENABLE_PUSH_CREATE_USER: true
+      DEFAULT_PUSH_CREATE_PRIVATE: false
+    database:
+      DB_TYPE: sqlite3
+    session:
+      PROVIDER: memory
+    cache:
+      ADAPTER: db
+    queue:
+      TYPE: level
+  admin:
+    existingSecret: gitea-secret

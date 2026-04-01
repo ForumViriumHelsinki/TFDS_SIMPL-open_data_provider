@@ -1,0 +1,12 @@
+
+ui:
+  apibaseurl: http://api:8080/
+image:
+  docker_enable: false
+ingress:
+  enabled: true
+  className: nginx
+serviceAccount:
+  name: infrastructure-fe
+service:
+  targetport: 80

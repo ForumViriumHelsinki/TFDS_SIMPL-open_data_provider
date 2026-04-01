@@ -1,0 +1,38 @@
+serviceAccount:
+  name: sdtooling-api-be-service-account
+
+# ID of persistentVolumeClaims associated with NFS Storage
+schemaVolumeClaim: nfs-storage-pvc-sd
+
+# configuration for connectivity between SD-Tooling-Api-Be and SD-Tooling-Api-Validation
+validation:
+  config:
+    domain: "http://sd-validation:8080"
+
+connectorAdapter:
+  service:
+    url:  http://edc-connector-adapter:8080
+
+# url to the AuthenticationProvider internal service
+authenticationProvider:
+  service:
+    url: http://authentication-provider:8080
+
+openTelemetry:
+  disabled: true
+
+# catalog adapter application (catalogue-adapter-service)
+catalogueAdapter:
+  tier2Gateway:
+    # tier2 tls gateway path configured as route rule to the catalog adapter application
+    pathPrefix: /adapter
+
+# federated catalog application (fc-service)
+federatedCatalogue:
+  tier2Gateway:
+    # URI to the tier2 tls gateway of the federated catalog application
+    # tier2 tls gateway path configured as route rule to the federated catalog application
+    pathPrefix: /fc
+
+ingress:
+  enabled: false

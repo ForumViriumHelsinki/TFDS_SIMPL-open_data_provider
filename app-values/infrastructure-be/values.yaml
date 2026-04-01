@@ -1,0 +1,50 @@
+postgres:
+  enabled: false
+kafka:
+  enabled: false
+image:
+  docker_enable: false  
+backend:
+  ingress:
+    enabled: true
+    className: nginx
+  livenessProbe:
+    httpGet:
+      path: /
+      port: http
+  readinessProbe:
+    httpGet:
+      path: /
+      port: http
+  env:
+    SPRING_JPA_HIBERNATE_DDL_AUTO: none
+    SPRING_JPA_SHOW_SQL: "false"
+    SPRING_JPA_DEFER_DATASOURCE_INITIALIZATION: "false"
+    SPRING_SQL_INIT_MODE: never
+    SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
+    SPRING_PROFILES_ACTIVE: docker
+    SPRING_KAFKA_PROPERTIES_SECURITY_PROTOCOL: SASL_PLAINTEXT
+    SPRING_KAFKA_PROPERTIES_SASL_MECHANISM: PLAIN
+    SPRING_MAIL_HOST: "smtp.ionos.de"
+    SPRING_MAIL_PORT: 587
+    SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH: "true"
+    SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_REQUIRED: "false"
+    SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE: "true"
+    KAFKA_SASL_ENABLED: true
+    SPRING_CLOUD_VAULT_KV_ENABLED: "true"
+    SPRING_CLOUD_VAULT_KV_VERSION: "2"
+    SERVER_PORT: "8080"
+    MALICIOUS_PATTERN_SQLINJECTION: (?i)\\b(select|update|delete|insert|drop|alter|truncate|exec|create|union|;|--)\\b
+    MALICIOUS_PATTERN_XSSA: <script>(.*?)</script>
+    MALICIOUS_PATTERN_XSSB: src[\r\n]*=[\r\n]*\\\'(.*?)\\\'
+    MALICIOUS_PATTERN_XSSC: src[\r\n]*=[\r\n]*\\\"(.*?)\\\"
+    MALICIOUS_PATTERN_XSSD: </script>
+    MALICIOUS_PATTERN_XSSE: <script(.*?)>
+    MALICIOUS_PATTERN_XSSF: eval\\((.*?)\\)
+    MALICIOUS_PATTERN_XSSG: expression\\((.*?)\\)
+    MALICIOUS_PATTERN_XSSH: 'javascript:'
+    MALICIOUS_PATTERN_XSSI: 'vbscript:'
+    MALICIOUS_PATTERN_XSSJ: onload(.*?)=
+    MALICIOUS_PATTERN_SHELL: \\b(ls|cat|echo|rm|cd|cp|mv|wget|curl)\\b
+    REQUEST_MATCHERS_PERMITTED: /status/**,/swagger-ui.html,/swagger-ui/**,/v3/api-docs/**,/scripts/trigger
+    SIMPL_CLOUD_PROVIDERS: ionos,ovh

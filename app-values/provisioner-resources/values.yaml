@@ -1,0 +1,9 @@
+dependenciesReleaseName: provisioner-dependencies
+dependenciesNamespace: infrastructure
+
+cliEnabled: true
+
+kafkaProvisioningRequestsTopicName: to-provision
+kafkaProvisioningResponsesTopicName: provisioned
+kafkaDecommissioningRequestsTopicName: to-decommission
+kafkaDecommissioningResponsesTopicName: decommissioned

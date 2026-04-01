@@ -1,0 +1,25 @@
+#Service port of component SD-Tooling-Api-Validation
+creationWizardApiValidationServicePort: 8080
+
+#Container port of component SD-Tooling-Api-Validation
+creationWizardApiValidationContainerPort: 8080
+
+#specify 'dev' for dev environment or 'dev-int' for integration environment
+vaultEnvIdentifier: dev-int
+
+#specify 'dev' for dev environment or 'int' for integration environment 
+domainUrlEnvIdentifier: int
+
+#Domain associated with Dev Cluster (don't modify it)
+domain: dataprovider03.int.simpl-europe.eu
+
+#ID of persistentVolumeClaims associated with NFS Storage
+schemaVolumeClaim: nfs-storage-pvc-sd
+#Mount path used for schema storage
+schemaPvcMountPath: /data
+
+serviceAccount:
+  name: sdtooling-validation-api-be-service-account
+
+openTelemetry:
+  disabled: false

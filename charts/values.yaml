@@ -1,0 +1,572 @@
+values:
+  repo_URL: https://github.com/ForumViriumHelsinki/TFDS_SIMPL-open_data_provider.git
+  branch: main
+
+project: ${PROJECT}
+domainSuffix: ${DOMAINSUFFIX}
+namespaceTag:
+  dataprovider: ${NAMESPACETAG}
+  authority: ${AUTHNAMESPACETAG}
+  common: ${COMMONSPACETAG}
+
+resourcePreset: default
+# resourcePreset: low
+
+argocd:
+  appname: ${NAMESPACE}
+  namespace: ${ARGOCDNAMESPACE}
+
+cluster:
+  address: https://kubernetes.default.svc
+  namespace: ${NAMESPACE}
+  commonToolsNamespace: ${COMMONNAMESPACE}
+  issuer: ${CLUSTERISSUER}
+
+secrets:
+  secretEngine: ${SECRETENGINE}
+  role: ${SECRETROLE}
+
+crossplane:
+  enabled: false
+  repo_URL: https://charts.crossplane.io/stable
+  targetRevision: 1.16.2
+  chart_name: crossplane
+  kafka:
+    username: ${CROSSPLANEKAFKAUSER}
+    password: ${CROSSPLANEKAFKAPASS}
+  gitea:
+    username: ${CROSSPLANEGITEAUSER}
+    password: ${CROSSPLANEGITEAPASS}
+  resourcesCrossplane:
+    requests:
+      cpu: "500m"
+      memory: "500Mi"
+    limits:
+      cpu: "500m"
+      memory: "1Gi"
+  resourcesRBACManager:
+    requests:
+      cpu: "500m"
+      memory: "500Mi"
+    limits:
+      cpu: "500m"
+      memory: "1Gi"
+
+redis:
+  repo_URL: 'https://charts.bitnami.com/bitnami'
+  targetRevision: 19.6.0
+  chart_name: redis
+  nameOverride: redis
+  resourcesPreset: "none"
+  resources:
+    requests:
+      cpu: "0"
+      memory: "0"
+  valueFiles:
+    - values.yaml
+
+redis_commander:
+  enabled: false
+  repo_URL: 'https://github.com/joeferner/redis-commander.git'
+  targetRevision: master
+  nameOverride: redis-commander
+  path: 'k8s/helm-chart/redis-commander'
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "512Mi"
+    limits:
+      cpu: "500m"
+      memory: "512Mi"
+  valueFiles:
+    - values.yaml
+
+keycloak:
+  repo_URL: https://charts.bitnami.com/bitnami
+  chart_name: keycloak
+  targetRevision: 22.2.5
+  nameOverride: keycloak
+  resourcesPreset: "none"
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "500Mi"
+    limits:
+      cpu: "500m"
+      memory: "1Gi"
+  valueFiles:
+    - values.yaml
+
+signer:
+  enabled: true
+  projectID: "954"
+  targetRevision: 0.0.7
+  chart_name: signer
+  serviceAccountName: signer-service-account
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "500Mi"
+    limits:
+      cpu: "500m"
+      memory: "500Mi"
+  valueFiles:
+    - values.yaml
+
+tier1_gateway:
+  projectID: "772"
+  targetRevision: 2.8.0
+  chart_name: tier1-gateway
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "500Mi"
+    limits:
+      cpu: "500m"
+      memory: "500Mi"
+  valueFiles:
+    - values.yaml
+
+sdtooling_api_be:
+  enabled: true
+  projectID: "778"
+  targetRevision: 1.19.0
+  chart_name: sd-creation-wizard
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "500Mi"
+    limits:
+      cpu: "500m"
+      memory: "500Mi"
+  valueFiles:
+    - values.yaml
+  nameOverride: sd
+
+sdtooling_validation_api_be:
+  enabled: true
+  projectID: "868"
+  targetRevision: 1.17.0
+  chart_name: sd-creation-wizard
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "500Mi"
+    limits:
+      cpu: "500m"
+      memory: "500Mi"
+  valueFiles:
+    - values.yaml
+  nameOverride: sd-validation
+
+xfsc_advsearch_be:
+  enabled:  true
+  projectID: "891"
+  targetRevision: 1.18.0
+  chart_name: xfsc-advsearch
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "500Mi"
+    limits:
+      cpu: "500m"
+      memory: "500Mi"
+  valueFiles:
+    - values.yaml
+  nameOverride: xfsc-advsearch-be
+
+users_roles_fe:
+  projectID: "1310"
+  targetRevision: 2.8.3
+  chart_name: fe-users-and-roles
+  resources:
+    requests:
+      cpu: "250m"
+      memory: "512Mi"
+    limits:
+      cpu: "250m"
+      memory: "512Mi"
+
+users_roles:
+  projectID: "771"
+  targetRevision: 2.8.0
+  chart_name: users-roles
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "500Mi"
+    limits:
+      cpu: "500m"
+      memory: "500Mi"
+  valueFiles:
+    - values.yaml
+
+sd_ui:
+  enabled: true
+  projectID: "923"
+  targetRevision: 1.5.0
+  chart_name: sd-ui
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "500Mi"
+    limits:
+      cpu: "500m"
+      memory: "500Mi"
+  valueFiles:
+    - values.yaml
+
+infrastructure_be:
+  projectID: "896"
+  targetRevision: 1.3.4
+  chart_name: infrastructure-be
+  fullnameOverride: infrastructure-be
+  resources:
+    requests:
+      cpu: "250m"
+      memory: "500Mi"
+    limits:
+      cpu: "500m"
+      memory: "750Mi"
+  valueFiles:
+    - values.yaml
+
+infrastructure_fe:
+  projectID: "895"
+  targetRevision: 1.2.2
+  chart_name: frontend
+  fullnameOverride: infrastructure-fe
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "500Mi"
+    limits:
+      cpu: "500m"
+      memory: "500Mi"
+  valueFiles:
+    - values.yaml
+
+tier2_gateway:
+  projectID: "860"
+  targetRevision: 2.8.0
+  chart_name: tier2-gateway
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "500Mi"
+    limits:
+      cpu: "500m"
+      memory: "500Mi"
+  valueFiles:
+    - values.yaml
+    - values-routes.yaml
+
+tier2_proxy:
+  projectID: "1112"
+  targetRevision: 1.2.1
+  chart_name: tier2-proxy
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "500Mi"
+    limits:
+      cpu: "500m"
+      memory: "500Mi"
+
+simpl_edc:
+  enabled:  true
+  projectID: "920"
+  targetRevision: 1.0.21
+  chart_name: edc
+  nameOverride: simpl-edc
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "500Mi"
+    limits:
+      cpu: "500m"
+      memory: "500Mi"
+  valueFiles:
+    - values.yaml
+    - values-provider.yaml
+
+
+edc_connector_adapter:
+  enabled:  true
+  projectID: "1091"
+  targetRevision: 1.10.1
+  chart_name: edc-connector-adapter
+  nameOverride: edc-connector-adapter
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "500Mi"
+    limits:
+      cpu: "500m"
+      memory: "500Mi"
+  valueFiles:
+    - values.yaml
+
+simpl_catalogue_client:
+  enabled: true
+  projectID: "937"
+  targetRevision: 2.2.0
+  chart_name: catalogue-ui
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "500Mi"
+    limits:
+      cpu: "500m"
+      memory: "500Mi"
+  valueFiles:
+    - values.yaml
+
+auth_provider_fe:
+  projectID: "1308"
+  targetRevision: 2.8.3
+  chart_name: fe-authentication-provider
+  resources:
+    requests:
+      cpu: "250m"
+      memory: "512Mi"
+    limits:
+      cpu: "250m"
+      memory: "512Mi"
+
+auth_provider:
+  projectID: "939"
+  targetRevision: 2.8.0
+  chart_name: authentication-provider
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "500Mi"
+    limits:
+      cpu: "500m"
+      memory: "1Gi"
+  valueFiles:
+    - values.yaml
+
+monitoring:
+  enabled: true
+  projectID: "828"
+  targetRevision: 0.3.1
+  chart_name: eck-monitoring
+  fullnameOverride: elastic
+  resources:
+    filebeat:
+      requests:
+        memory: "100Mi"
+        cpu: "100m"
+  valueFiles:
+    - values.yaml
+
+contract:
+  projectID: "872"
+  targetRevision: 2.5.0
+  chart_name: simpl-contract
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "500Mi"
+    limits:
+      cpu: "500m"
+      memory: "700Mi"
+  valueFiles:
+    - values.yaml
+  fullnameOverride: contract-dataprovider
+
+stubs:
+  projectID: "930"
+  targetRevision: 2.0.2
+  chart_name: simpl-stubs
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "500Mi"
+    limits:
+      cpu: "500m"
+      memory: "500Mi"
+  valueFiles:
+    - values.yaml
+
+files:
+  enabled:  true
+  projectID: "978"
+  targetRevision: 1.2.3
+  chart_name: simpl-files
+  nameOverride: simpl-files
+  resources:
+    requests:
+      cpu: "250m"
+      memory: "500Mi"
+    limits:
+      cpu: "500m"
+      memory: "500Mi"
+  valueFiles:
+    - values.yaml
+
+gitea:
+  repo_URL: https://dl.gitea.com/charts
+  targetRevision: 10.4.1
+  chart_name: gitea
+  nameOverride: gitea
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "500Mi"
+    limits:
+      cpu: "500m"
+      memory: "500Mi"
+  valueFiles:
+    - values.yaml
+
+argocd:
+  repo_URL: https://argoproj.github.io/argo-helm
+  targetRevision: 6.7.13
+  chart_name: argo-cd
+  nameOverride: infrastructure-argo-cd
+  resources:
+    server:
+      requests:
+        cpu: "250m"
+        memory: "500Mi"
+      limits:
+        cpu: "500m"
+        memory: "500Mi"
+    repoServer:
+      requests:
+        cpu: "250m"
+        memory: "500Mi"
+      limits:
+        cpu: "500m"
+        memory: "500Mi"
+    redis:
+      requests:
+        cpu: "250m"
+        memory: "500Mi"
+      limits:
+        cpu: "500m"
+        memory: "500Mi"
+    controller:
+      requests:
+        cpu: "250m"
+        memory: "500Mi"
+      limits:
+        cpu: "1"
+        memory: "2Gi"
+  valueFiles:
+    - values.yaml
+
+argoevents:
+  repo_URL: https://argoproj.github.io/argo-helm
+  targetRevision: 2.4.8
+  chart_name: argo-events
+  nameOverride: infrastructure-argo-events
+  resources:
+    controller:
+      requests:
+        cpu: "250m"
+        memory: "500Mi"
+      limits:
+        cpu: "500m"
+        memory: "500Mi"
+  valueFiles:
+    - values.yaml
+
+argoworkflows:
+  repo_URL: https://argoproj.github.io/argo-helm
+  targetRevision: 0.42.5
+  chart_name: argo-workflows
+  nameOverride: infrastructure-argo-workflows
+  resources:
+    server:
+      requests:
+        cpu: "250m"
+        memory: "500Mi"
+      limits:
+        cpu: "500m"
+        memory: "500Mi"
+    controller:
+      requests:
+        cpu: "250m"
+        memory: "500Mi"
+      limits:
+        cpu: "500m"
+        memory: "500Mi"
+  valueFiles:
+    - values.yaml
+
+fluxcd:
+  repo_URL: https://fluxcd-community.github.io/helm-charts
+  targetRevision: 2.15.0
+  chart_name: flux2
+  nameOverride: fluxcd
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "500Mi"
+    limits:
+      cpu: "500m"
+      memory: "500Mi"
+
+provisionerresources:
+  projectID: "912"
+  targetRevision: 2.1.2
+  chart_name: infrastructure-crossplane
+  nameOverride: infrastructure-crossplane
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "500Mi"
+    limits:
+      cpu: "500m"
+      memory: "500Mi"
+  valueFiles:
+    - values.yaml
+
+tfcontroller:
+  repo_URL: https://flux-iac.github.io/tofu-controller
+  targetRevision: 0.15.1
+  chart_name: tf-controller
+  nameOverride: infrastructure-tofu-controller
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "500Mi"
+    limits:
+      cpu: "500m"
+      memory: "500Mi"
+
+eso:
+  repo_URL: https://charts.external-secrets.io/
+  targetRevision: 0.18.1
+  chart_name: external-secrets
+  nameOverride: external-secrets
+
+dagster:
+  projectID: "1304"
+  targetRevision: 0.1.12
+  chart_name: dagster
+  nameOverride: dagster
+  valueFiles:
+    - values.yaml
+  field_level_pseudo_anonymisation:
+    version: 0.3.0
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        cpu: 500m
+        memory: 1Gi
+  dataframe_level_anonymisation:
+    version: 0.3.0
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        cpu: 500m
+        memory: 1Gi

@@ -1,0 +1,24 @@
+# specify 'dev' for dev environment or 'int' for integration environment
+domainUrlEnvIdentifier: int
+
+serviceAccount:
+   # optional service account prefix
+   prefix:
+
+openTelemetry:
+  # disables the OpenTelemetry SDK (true on local dev)   
+  disabled: false
+  # used to identify the environment
+  environment: int
+
+profile: provider
+
+edcConnector:
+  # the participant id to be used as assigner in policies as expected by the EDC connector on contract negotiation
+  participantId: provider
+  baseUrl: http://simpl-edc-service:19193
+
+appJarPath: "/home/simpluser/app.jar"
+
+ingress:
+  enabled: false

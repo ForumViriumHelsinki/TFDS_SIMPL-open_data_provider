@@ -1,0 +1,4 @@
+deployment:
+  urls:
+    stubs: 'http://simpl-stubs:8080'
+    edc: 'http://simpl-edc-service:19191/api'

@@ -1,0 +1,253 @@
+{{- if .Values.crossplane.enabled }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ .Values.argocd.appname }}-dependencies
+  namespace: {{ .Values.argocd.namespace }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  syncPolicy:
+    automated: {}
+    syncOptions:
+      - ApplyOutOfSyncOnly=true
+      - CreateNamespace=true
+      - ServerSideApply=true
+  project: {{ .Values.project }}
+  destination:
+    server: {{ .Values.cluster.address }}
+    namespace: {{ .Values.cluster.namespace }}
+  sources:
+  - repoURL: {{ .Values.values.repo_URL }}
+    targetRevision: {{ .Values.values.branch }}
+    ref: values
+  - repoURL: {{ .Values.crossplane.repo_URL }}
+    targetRevision: {{ .Values.crossplane.targetRevision }}
+    chart: {{ .Values.crossplane.chart_name }}
+    helm:
+      valueFiles:
+        {{- range .Values.crossplane.valueFiles }}
+        - $values/app-values/crossplane/{{ . }}
+        {{- end }}
+      values: |
+        configuration:
+          packages:
+            - code.europa.eu:4567/simpl/simpl-open/development/infrastructure/infrastructure-crossplane/configuration:{{ .Values.provisionerresources.targetRevision }}
+        {{- if eq .Values.resourcePreset "low" }}
+        resourcesCrossplane:
+          requests:
+            cpu: "0"
+            memory: "0"
+        resourcesRBACManager:
+          requests:
+            cpu: "0"
+            memory: "0"
+        {{- else }}
+          {{- if .Values.crossplane.resourcesCrossplane }}
+          resourcesCrossplane: {{- toYaml .Values.crossplane.resourcesCrossplane | nindent 10 }}
+          {{- end }}
+          {{- if .Values.crossplane.resourcesRBACManager }}
+          resourcesRBACManager: {{- toYaml .Values.crossplane.resourcesRBACManager | nindent 10 }}
+          {{- end }}
+        {{- end }}
+  - repoURL: {{ .Values.gitea.repo_URL }}
+    targetRevision: {{ .Values.gitea.targetRevision }}
+    chart: {{ .Values.gitea.chart_name }}
+    helm:
+      releaseName: {{ .Values.gitea.nameOverride }}
+      valueFiles:
+        {{- range .Values.gitea.valueFiles }}
+        - $values/app-values/gitea/{{ . }}
+        {{- end }}
+      values: |
+        ingress:
+          enabled: true
+          annotations:
+            cert-manager.io/cluster-issuer: {{ .Values.cluster.issuer }}
+          className: nginx
+          hosts:
+            - host: gitea.crossplane.{{ .Values.namespaceTag.dataprovider }}.{{ .Values.domainSuffix }}
+              paths:
+              - path: /
+                pathType: ImplementationSpecific
+          tls:
+            - secretName: gitea-crossplane-tld-secret
+              hosts:
+                - gitea.crossplane.{{ .Values.namespaceTag.dataprovider }}.{{ .Values.domainSuffix }}
+        {{- if .Values.gitea.resources  }}
+        resources: {{- toYaml .Values.gitea.resources | nindent 10 }}
+        {{- end }}
+  - repoURL: {{ .Values.argocd.repo_URL }}
+    targetRevision: {{ .Values.argocd.targetRevision }}
+    chart: {{ .Values.argocd.chart_name }}
+    helm:
+      releaseName: {{ .Values.argocd.nameOverride }}
+      valueFiles:
+        {{- range .Values.argocd.valueFiles }}
+        - $values/app-values/argocd/{{ . }}
+        {{- end }}
+      values: |
+        global:
+          domain: argoui.crossplane.{{ .Values.namespaceTag.dataprovider }}.{{ .Values.domainSuffix }}
+        server:
+          ingress:
+            enabled: true
+            annotations:
+              cert-manager.io/cluster-issuer: {{ .Values.cluster.issuer }}
+            tls: true
+            ingressClassName: nginx
+            pathType: ImplementationSpecific
+          {{- if eq .Values.resourcePreset "low" }}
+          resources:
+            requests:
+              cpu: "0"
+              memory: "0"
+          {{- else }}
+            {{- if .Values.argocd.resources.server }}
+          resources: {{- toYaml .Values.argocd.resources.server | nindent 12 }}
+            {{- end }}
+          {{- end }}
+        repoServer:
+          {{- if eq .Values.resourcePreset "low" }}
+          resources:
+            requests:
+              cpu: "0"
+              memory: "0"
+          {{- else }}
+            {{- if .Values.argocd.resources.repoServer }}
+          resources: {{- toYaml .Values.argocd.resources.repoServer | nindent 12 }}
+            {{- end }}
+          {{- end }}
+        redis:
+          {{- if eq .Values.resourcePreset "low" }}
+          resources:
+            requests:
+              cpu: "0"
+              memory: "0"
+          {{- else }}
+            {{- if .Values.argocd.resources.redis }}
+          resources: {{- toYaml .Values.argocd.resources.redis | nindent 12 }}
+            {{- end }}
+          {{- end }}
+        controller:
+          {{- if eq .Values.resourcePreset "low" }}
+          resources:
+            requests:
+              cpu: "0"
+              memory: "0"
+          {{- else }}
+            {{- if .Values.argocd.resources.controller }}
+          resources: {{- toYaml .Values.argocd.resources.controller | nindent 12 }}
+            {{- end }}
+          {{- end }}
+        fullnameOverride: {{ .Values.argocd.nameOverride }}
+  - repoURL: {{ .Values.argoevents.repo_URL }}
+    targetRevision: {{ .Values.argoevents.targetRevision }}
+    chart: {{ .Values.argoevents.chart_name }}
+    helm:
+      releaseName: {{ .Values.argoevents.nameOverride }}
+      values: |
+        fullnameOverride: {{ .Values.argoevents.nameOverride }}
+        controller:
+          {{- if eq .Values.resourcePreset "low" }}
+          resources:
+            requests:
+              cpu: "0"
+              memory: "0"
+          {{- else }}
+            {{- if .Values.argoevents.resources.controller }}
+          resources: {{- toYaml .Values.argoevents.resources.controller | nindent 12 }}
+            {{- end }}
+          {{- end }}
+  - repoURL: {{ .Values.argoworkflows.repo_URL }}
+    targetRevision: {{ .Values.argoworkflows.targetRevision }}
+    chart: {{ .Values.argoworkflows.chart_name }}
+    helm:
+      releaseName: {{ .Values.argoworkflows.nameOverride }}
+      values: |
+        server:
+          ingress:
+            enabled: true
+            annotations:
+              cert-manager.io/cluster-issuer: {{ .Values.cluster.issuer }}
+            ingressClassName: nginx
+            hosts:
+              - argoworkflows.crossplane.{{ .Values.namespaceTag.dataprovider }}.{{ .Values.domainSuffix }}
+            paths:
+              - /
+            pathType: ImplementationSpecific
+            tls:
+              - secretName: argowf-crossplane-tld-secret
+                hosts:
+                  - argoworkflows.crossplane.{{ .Values.namespaceTag.dataprovider }}.{{ .Values.domainSuffix }}
+          {{- if eq .Values.resourcePreset "low" }}
+          resources:
+            requests:
+              cpu: "0"
+              memory: "0"
+          {{- else }}
+            {{- if .Values.argoworkflows.resources.server }}
+          resources: {{- toYaml .Values.argoworkflows.resources.server | nindent 12 }}
+            {{- end }}
+          {{- end }}          
+        controller:
+          {{- if eq .Values.resourcePreset "low" }}
+          resources:
+            requests:
+              cpu: "0"
+              memory: "0"
+          {{- else }}
+            {{- if .Values.argoworkflows.resources.controller }}
+          resources: {{- toYaml .Values.argoworkflows.resources.controller | nindent 12 }}
+            {{- end }}
+          {{- end }}
+        fullnameOverride: {{ .Values.argoworkflows.nameOverride }}
+  - repoURL: {{ .Values.fluxcd.repo_URL }}
+    targetRevision: {{ .Values.fluxcd.targetRevision }}
+    chart: {{ .Values.fluxcd.chart_name }}
+    helm:
+      releaseName: {{ .Values.fluxcd.nameOverride }}
+      values: |
+        fullnameOverride: {{ .Values.fluxcd.nameOverride }}
+        policies:
+          create: false
+  - repoURL: {{ .Values.eso.repo_URL }}
+    targetRevision: {{ .Values.eso.targetRevision }}
+    chart: {{ .Values.eso.chart_name }}
+    helm:
+      releaseName: {{ .Values.eso.nameOverride }}
+      values: |
+        fullnameOverride: {{ .Values.eso.nameOverride }}
+  - repoURL: "https://code.europa.eu/api/v4/projects/{{ .Values.provisionerresources.projectID }}/packages/helm/stable"
+    targetRevision: {{ .Values.provisionerresources.targetRevision }}
+    chart: {{ .Values.provisionerresources.chart_name }}
+    helm:
+      releaseName: {{ .Values.provisionerresources.nameOverride }}
+      valueFiles:
+        {{- range .Values.provisionerresources.valueFiles }}
+        - $values/app-values/provisioner-resources/{{ . }}
+        {{- end }}
+      values: |
+        podAnnotations:
+          vault.security.banzaicloud.io/vault-addr: "https://secrets.{{ .Values.namespaceTag.common }}.{{ .Values.domainSuffix }}"
+          vault.security.banzaicloud.io/vault-role: {{ .Values.secrets.role }}
+        fullnameOverride: {{ .Values.provisionerresources.nameOverride }}
+        kafkaEndpoint: kafka.{{ .Values.cluster.commonToolsNamespace }}.svc.cluster.local:9092
+        giteaUrl: gitea-http.{{ .Values.cluster.namespace }}.svc.cluster.local:3000
+        vaultServer: "https://secrets.{{ .Values.namespaceTag.common }}.{{ .Values.domainSuffix }}"
+        secrets:
+          kafka:
+            username: {{ .Values.crossplane.kafka.username }}
+            password: {{ .Values.crossplane.kafka.password }}
+          gitea:
+            username: {{ .Values.crossplane.gitea.username }}
+            password: {{ .Values.crossplane.gitea.password }}
+  - repoURL: {{ .Values.tfcontroller.repo_URL }}
+    targetRevision: {{ .Values.tfcontroller.targetRevision }}
+    chart: {{ .Values.tfcontroller.chart_name }}
+    helm:
+      releaseName: {{ .Values.tfcontroller.nameOverride }}
+      values: |
+        fullnameOverride: {{ .Values.tfcontroller.nameOverride }}
+        eventsAddress: http://notification-controller.{{ .Values.cluster.namespace }}.svc.cluster.local./
+{{- end }}

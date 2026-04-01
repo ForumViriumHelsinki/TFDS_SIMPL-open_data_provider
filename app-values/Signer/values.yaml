@@ -1,0 +1,17 @@
+SERVICE_PORT: 8084
+CONTAINER_PORT: 8084
+DEPLOYMENT_IMAGE_PULL_POLICY: Always
+REPOSITORY: "code.europa.eu:4567/simpl/simpl-open/development/gaia-x-edc/poc-gaia-edc/simpl-backend"
+TAG: "latest"
+
+ingress:
+  host: adapter-infra.{{ .Values.namespaceTag.dataprovider }}.{{ .Values.domainSuffix }}
+  tls:
+    secretName: adapter-infra-simpl-backend-tls
+  annotations:
+    acme.cert-manager.io/http01-edit-in-place: "false"
+  enabled: false
+
+deployment:
+  label: infra-deployment
+  
