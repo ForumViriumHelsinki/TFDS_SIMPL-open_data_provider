@@ -6,6 +6,7 @@ values:
 
 project: ${PROJECT}
 domainSuffix: ${DOMAINSUFFIX}
+authorityDomainSuffix: ${AUTHORITYDOMAINSUFFIX}
 namespaceTag:
   dataprovider: ${NAMESPACETAG}
   authority: ${AUTHNAMESPACETAG}

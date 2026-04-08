@@ -16,9 +16,13 @@ spec:
           branch: v3.0.6                   # branch of repo with values - for released version it should be the release branch
         project: default
         namespaceTag:
-          dataprovider: dataprovider      # identifier of deployment and part of fqdn for this agent
-          common: common                 # identifier of deployment and part of fqdn for common components
-        domainSuffix: idea.helsinki.tfds.io           # last part of fqdn
+          # These tags are injected into the middle of the FQDN strings.
+          # Example: https://<service>.<namespaceTag>.<domainSuffix>
+          dataprovider: dataprovider     # Creates URLs like: https://sd-ui.dataprovider.idea...
+          authority: authority           # Creates URLs pointing to the central trust: https://tls.authority.authority.ds...
+          common: common                 # Creates URLs pointing to shared infrastructure: https://secrets.common.idea...
+        domainSuffix: idea.helsinki.tfds.io           # last part of fqdn for this provider
+        authorityDomainSuffix: ds.helsinki.tfds.io    # last part of fqdn for the governance authority cluster
         resourcePreset: low             # set to "low" to disable requests of resources
         argocd:
           appname: dataprovider           # name of generated argocd app 
