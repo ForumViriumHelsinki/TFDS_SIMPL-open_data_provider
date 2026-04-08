@@ -2,6 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: 'dataprovider-deployer'           # name of the deploying app in argocd
+  namespace: argocd
 spec:
   project: default
   source:
@@ -40,7 +41,6 @@ spec:
             password: pass                  # password of gitea - the variable can take on any value (set it to your preference)
         monitoring:
           enabled: false                     # should monitoring be enabled
-    chart: data-provider
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: dataprovider               # where the package will be deployed
