@@ -10,6 +10,7 @@ spec:
     targetRevision: main                   # version of package
     helm:
       values: |
+        singleNode: true
         values:
           branch: main                    # branch of repo with values - for released version it should be the release branch
         project: default
