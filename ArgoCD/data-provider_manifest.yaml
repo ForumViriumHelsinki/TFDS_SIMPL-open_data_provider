@@ -7,12 +7,12 @@ spec:
   source:
     repoURL: 'https://github.com/ForumViriumHelsinki/TFDS_SIMPL-open_data_provider.git'
     path: charts
-    targetRevision: main                   # version of package
+    targetRevision: v3.0.6                   # version of package
     helm:
       values: |
         singleNode: true
         values:
-          branch: main                    # branch of repo with values - for released version it should be the release branch
+          branch: v3.0.6                   # branch of repo with values - for released version it should be the release branch
         project: default
         namespaceTag:
           dataprovider: dataprovider      # identifier of deployment and part of fqdn for this agent
