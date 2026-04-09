@@ -47,4 +47,4 @@ backend:
     MALICIOUS_PATTERN_XSSJ: onload(.*?)=
     MALICIOUS_PATTERN_SHELL: \\b(ls|cat|echo|rm|cd|cp|mv|wget|curl)\\b
     REQUEST_MATCHERS_PERMITTED: /status/**,/swagger-ui.html,/swagger-ui/**,/v3/api-docs/**,/scripts/trigger
-    SIMPL_CLOUD_PROVIDERS: ionos,ovh
+    SIMPL_CLOUD_PROVIDERS: ""
