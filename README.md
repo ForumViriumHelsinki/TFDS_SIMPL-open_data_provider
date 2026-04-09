@@ -34,7 +34,12 @@ Open this file and update the `values` block to match your environment:
    domainSuffix: idea.helsinki.tfds.io           # Your local cluster's base domain
    authorityDomainSuffix: ds.helsinki.tfds.io    # The external Governance Authority's base domain
    ```
-3. **Cloud Provisioning (Crossplane):** By default, this is set to `enabled: false`. **Leave this as false** for local k3s deployments. Setting this to true will attempt to provision heavy cloud-native components (IONOS/OVH) that will crash a vanilla k3s node.
+3. **Cloud Provisioning (Crossplane):** By default, this is set to `enabled: false`. **Leave this as false** for local k3s deployments.
+   * *What it is:* This module (including Gitea, FluxCD, Argo Events, and `infrastructure-be`) is designed exclusively to auto-provision virtual machines and workloads on external OVH or IONOS clouds.
+   * *The Impact:* Enabling this on a vanilla local k3s node will cause catastrophic initialization failures (e.g., `argo-events` crashing due to OS `inotify` limits, and GitOps pipelines failing to authenticate). Disabling it ensures a clean, lightweight deployment of the core data agent.
+4. **Monitoring:** By default, this is set to `enabled: false`.
+   * *What it is:* This controls whether the agent's Java applications attempt to ship OpenTelemetry metrics and traces to the Elastic stack in the Common Components namespace.
+   * *The Impact:* If you are not running the heavy Elastic monitoring stack in your cluster, leaving this disabled is correct. You may still see occasional `[otel.javaagent] WARN` messages in the pod logs complaining about a 404 error when trying to reach the collector. These logs are harmless, fire-and-forget telemetry drops and will not impact the performance or stability of the Data Provider.
 
 ---
 
