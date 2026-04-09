@@ -2,7 +2,7 @@ singleNode: ${SINGLENODE}
 
 values:
   repo_URL: https://github.com/ForumViriumHelsinki/TFDS_SIMPL-open_data_provider.git
-  branch: main
+  branch: v3.0.6
 
 project: ${PROJECT}
 domainSuffix: ${DOMAINSUFFIX}
