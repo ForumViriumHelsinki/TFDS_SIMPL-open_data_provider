@@ -1,9 +1,12 @@
+singleNode: ${SINGLENODE}
+
 values:
   repo_URL: https://github.com/ForumViriumHelsinki/TFDS_SIMPL-open_data_provider.git
   branch: main
 
 project: ${PROJECT}
 domainSuffix: ${DOMAINSUFFIX}
+authorityDomainSuffix: ${AUTHORITYDOMAINSUFFIX}
 namespaceTag:
   dataprovider: ${NAMESPACETAG}
   authority: ${AUTHNAMESPACETAG}

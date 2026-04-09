@@ -15,7 +15,7 @@ persistence:
   #  mount: true
   #create: false
   #claimName: gitea-pvc
-  storageClass: csi-cinder-high-speed
+  storageClass: local-path
   size: 11Gi
 gitea:
   config:
