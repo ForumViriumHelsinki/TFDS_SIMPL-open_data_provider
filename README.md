@@ -1,16 +1,16 @@
 # TFDS SIMPL-open Data Provider Agent
 
-This repository contains the deployment manifests and configurations for the **SIMPL-Open Data Provider** agent, heavily adapted and optimized for local, single-node Kubernetes (k3s) environments.
+This repository contains the deployment manifests and configurations for the **SIMPL-Open Data Provider** agent. It natively supports standard multi-node cloud deployments, but has also been heavily adapted and optimized to successfully run in local, single-node Kubernetes (k3s) environments.
 
 ## 🚀 Quick Start Deployment Guide
 
-This guide is designed for users who want to quickly deploy the Data Provider agent using **ArgoCD**. It assumes you are deploying to a local, single-node k3s cluster.
+This guide is designed for users who want to quickly deploy the Data Provider agent using **ArgoCD**. While it assumes a single-node k3s setup, these exact manifests will scale out-of-the-box to a multi-node cluster.
 
 ### Prerequisites
 
 Before deploying the Data Provider, ensure your environment meets the following requirements:
-1. **Running k3s Cluster:** A single-node cluster with `MetalLB` and an `nginx` Ingress Controller.
-2. **Common Components Deployed:** The core SIMPL infrastructure (Kafka, PostgreSQL, Elastic, OpenBao) must already be running in the `common` namespace.
+1. **Running Kubernetes Cluster:** Any standard Kubernetes cluster. If you are deploying to a local, single-node environment, an `nginx` Ingress Controller and `MetalLB` (or an equivalent load balancer) are required.
+2. **Common Components Deployed:** The core SIMPL infrastructure (Kafka, PostgreSQL, Elastic, OpenBao) must already be running in the `common` namespace. You can find the deployment guide for this layer in the [Common Components Repository](https://github.com/ForumViriumHelsinki/TFDS_SIMPL-open_common_components).
 3. **DNS Routing:** A wildcard DNS record (e.g., `*.dataprovider.yourdomain.com`) pointing to your MetalLB public IP.
 4. **Governance Authority:** You need the domain name of the external Governance Authority cluster you will federate with (e.g., `ds.helsinki.tfds.io`).
 
@@ -34,10 +34,11 @@ Open this file and update the `values` block to match your environment:
    domainSuffix: idea.helsinki.tfds.io           # Your local cluster's base domain
    authorityDomainSuffix: ds.helsinki.tfds.io    # The external Governance Authority's base domain
    ```
-3. **Cloud Provisioning (Crossplane):** By default, this is set to `enabled: false`. **Leave this as false** for local k3s deployments.
+3. **Single-Node Mode (Optional):** If deploying to a single-node environment (like local k3s) with a single IP address, ensure `singleNode: true` is set in the manifest. For standard distributed cloud clusters with multi-IP LoadBalancers, remove this variable or set it to `false`.
+4. **Cloud Provisioning (Crossplane):** By default, this is set to `enabled: false`. **Leave this as false** for local k3s deployments.
    * *What it is:* This module (including Gitea, FluxCD, Argo Events, and `infrastructure-be`) is designed exclusively to auto-provision virtual machines and workloads on external OVH or IONOS clouds.
    * *The Impact:* Enabling this on a vanilla local k3s node will cause catastrophic initialization failures (e.g., `argo-events` crashing due to OS `inotify` limits, and GitOps pipelines failing to authenticate). Disabling it ensures a clean, lightweight deployment of the core data agent.
-4. **Monitoring:** By default, this is set to `enabled: false`.
+5. **Monitoring:** By default, this is set to `enabled: false`.
    * *What it is:* This controls whether the agent's Java applications attempt to ship OpenTelemetry metrics and traces to the Elastic stack in the Common Components namespace.
    * *The Impact:* If you are not running the heavy Elastic monitoring stack in your cluster, leaving this disabled is correct. You may still see occasional `[otel.javaagent] WARN` messages in the pod logs complaining about a 404 error when trying to reach the collector. These logs are harmless, fire-and-forget telemetry drops and will not impact the performance or stability of the Data Provider.
 
