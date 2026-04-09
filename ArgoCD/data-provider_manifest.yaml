@@ -36,7 +36,7 @@ spec:
           role: example-role                # role created in OpenBao for access
           secretEngine: example             # secret engine name created in OpenBao
         crossplane:
-          enabled: true                     # if infrastructure components should be deployed (there can be only one instance per cluster)
+          enabled: false                    # Set to true only if deploying on supported cloud providers (IONOS, OVH) to allow the agent to auto-provision infrastructure
           kafka:
             username: user                  # name should be: namespace_infrabe e.g.: dataprovider01_infrabe
             password: pass                  # take the password from common01-kafka-credentials OpenBao secret, key dataprovider01_infrabe
