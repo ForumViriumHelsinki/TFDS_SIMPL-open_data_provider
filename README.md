@@ -1,5 +1,17 @@
 # TFDS SIMPL-open Data Provider Agent
 
+> **Notice: TFDS Project Fork**
+> This repository is a GitOps-optimized fork maintained by the TFDS Project. 
+> 
+> **Modifications:**
+> - **GitOps Synchronization:** Substituted upstream dependencies (e.g., the Authentication Provider) with TFDS-maintained GitOps forks to eliminate declarative synchronization drift in ArgoCD caused by dynamically generated Job names.
+> - **Single-Node Compatibility:** Introduced a dynamic `singleNode: true` toggle to bypass `LoadBalancer` MetalLB IP collisions by forcing `ClusterIP` and auto-generating an `ssl-passthrough` Ingress for the `tier2-gateway`.
+> - **Cross-Domain Federation:** Decoupled the Governance Authority domain prefix from the agent's root domain, enabling the Provider to federate securely across remote Kubernetes clusters residing on entirely separate DNS trees.
+> - **Storage Class Adaptation:** Patched hardcoded, cloud-specific volume drivers (e.g., `csi-cinder-high-speed` for Gitea) to utilize standard k3s `local-path` provisioners.
+> - **Lightweight Profiling:** Stripped out forced Cloud Infrastructure Provisioning modules (Crossplane/FluxCD/Argo Events) by default to prevent OS-level `inotify` limit crashes on vanilla nodes.
+>
+> *The core SIMPL applications are unmodified and dynamically pulled from official registries under EUPL 1.2.*
+
 This repository contains the deployment manifests and configurations for the **SIMPL-Open Data Provider** agent. It natively supports standard multi-node cloud deployments, but has also been heavily adapted and optimized to successfully run in local, single-node Kubernetes (k3s) environments.
 
 ## 🚀 Quick Start Deployment Guide
