@@ -1034,9 +1034,11 @@ spec:
             GITEA_URL: "http://gitea-http.{{ .Values.cluster.namespace }}.svc.cluster.local:3000/api/v1"
             GITEA_USER: {{ .Values.crossplane.gitea.username }}
             GITEA_PASSWORD: {{ .Values.crossplane.gitea.password }}
+            {{- if .Values.monitoring.enabled }}
             OTEL_EXPORTER_OTLP_ENDPOINT: http://collector.{{ .Values.namespaceTag.common }}.{{ .Values.domainSuffix }}
             OTEL_SERVICE_NAME: "infrastructure-be"
             OTEL_LOGS_EXPORTER: "none"
+            {{- end }}
           ingress:
             enabled: true
             hosts:
