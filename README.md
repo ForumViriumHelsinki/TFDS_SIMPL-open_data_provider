@@ -100,3 +100,5 @@ These components act as the secure trust gateways for the data space. They are i
 You must complete the manual **Participant Onboarding** process through the newly deployed Data Provider UI. Once the agent is officially onboarded and the certificates are generated and synced, these pods will automatically recover, initialize, and turn green.
 
 *Reference the official [SIMPL Open Onboarding Manual](https://code.europa.eu/simpl/simpl-open/development/iaa/documentation/-/blob/main/versioned_docs/2.5.x/user-manual/ONBOARD.md) to complete this final step.*
+#### Known Limitation: Infrastructure Provisioning SMTP
+If you choose to enable the Cloud Provisioning module (`crossplane.enabled: true`), be aware that the `infrastructure-be` microservice currently contains hardcoded external SMTP configurations (e.g., `smtp.ionos.de`) within its Helm values. It does not automatically inherit the centralized SMTP configurations managed by the Common Components. You will need to manually patch `app-values/infrastructure-be/values.yaml` and synchronize its password via OpenBao to enable email functionality for cloud provisioning events.
