@@ -1,9 +1,0 @@
-dagster:
-  postgresql:
-    enabled: false
-
-  serviceAccount:
-    name: dagster-svc-account    
-
-  global:
-    serviceAccountName: dagster-svc-account
