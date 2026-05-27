@@ -117,7 +117,7 @@ spec:
           value: "participant"
         - name: KEYCLOAK_EXTRA_ARGS
           value: --import-realm
-        initContainers: 
+        initContainers:
         - name: init-spi
           image: curlimages/curl
           command: ["/bin/sh", "-c"]
@@ -162,7 +162,7 @@ spec:
         resources: {{- toYaml .Values.keycloak.resources | nindent 10 }}
           {{- end }}
         {{- end }}
-  {{- if .Values.sdtooling_api_be.enabled }}      
+  {{- if .Values.sdtooling_api_be.enabled }}
   - repoURL: "https://code.europa.eu/api/v4/projects/{{ .Values.sdtooling_api_be.projectID }}/packages/helm/stable"
     path: ''
     targetRevision: {{ .Values.sdtooling_api_be.targetRevision }}
@@ -239,7 +239,7 @@ spec:
           {{- end }}
         {{- end }}
       releaseName: {{ .Values.sdtooling_api_be.nameOverride }}
-  {{- end }}    
+  {{- end }}
   {{- if .Values.sdtooling_validation_api_be.enabled }}
   - repoURL: "https://code.europa.eu/api/v4/projects/{{ .Values.sdtooling_validation_api_be.projectID }}/packages/helm/stable"
     path: ''
@@ -265,7 +265,7 @@ spec:
         - $values/app-values/sdtooling-validation-api-be/{{ . }}
         {{- end }}
       releaseName: {{ .Values.sdtooling_validation_api_be.nameOverride }}
-  {{- end }}    
+  {{- end }}
   {{- if .Values.xfsc_advsearch_be.enabled }}
   - repoURL: "https://code.europa.eu/api/v4/projects/{{ .Values.xfsc_advsearch_be.projectID }}/packages/helm/stable"
     path: ''
@@ -297,7 +297,7 @@ spec:
           {{- end }}
         {{- end }}
       releaseName: {{ .Values.xfsc_advsearch_be.nameOverride }}
-  {{- end }}    
+  {{- end }}
   {{- if .Values.signer.enabled }}
   - repoURL: "https://code.europa.eu/api/v4/projects/{{ .Values.signer.projectID }}/packages/helm/stable"
     path: ''
@@ -321,8 +321,8 @@ spec:
           role: {{ .Values.secrets.role }}
         secretEngine: {{ .Values.secrets.secretEngine }}
         secretConfigPath: "{{ .Values.secrets.secretEngine }}/{{ .Values.cluster.namespace }}-infra-adapter-simpl-backend"
-  {{- end }}    
-  {{- if .Values.simpl_catalogue_client.enabled }}    
+  {{- end }}
+  {{- if .Values.simpl_catalogue_client.enabled }}
   - repoURL: "https://code.europa.eu/api/v4/projects/{{ .Values.simpl_catalogue_client.projectID }}/packages/helm/stable"
     path: ''
     targetRevision: {{ .Values.simpl_catalogue_client.targetRevision }}
@@ -371,7 +371,7 @@ spec:
         - $values/app-values/tier1-gateway/{{ . }}
         {{- end }}
       values: |
-        hostT1: participant.be.{{ .Values.namespaceTag.dataprovider }}.{{ .Values.domainSuffix }}  
+        hostT1: participant.be.{{ .Values.namespaceTag.dataprovider }}.{{ .Values.domainSuffix }}
         cors:
           allowOrigin: https://participant.fe.{{ .Values.namespaceTag.dataprovider }}.{{ .Values.domainSuffix }},https://participant.be.{{ .Values.namespaceTag.dataprovider }}.{{ .Values.domainSuffix }},https://infrastructure-fe.{{ .Values.namespaceTag.dataprovider }}.{{ .Values.domainSuffix }},http://localhost:4202,http://localhost:3000
         ingress:
@@ -482,7 +482,7 @@ spec:
         - name: KEYCLOAK_URL
           value: "https://participant.be.{{ .Values.namespaceTag.dataprovider }}.{{ .Values.domainSuffix }}/auth"
         - name: KEYCLOAK_REALM
-          value: "participant" 
+          value: "participant"
         - name: KEYCLOAK_CLIENT_ID
           value: "frontend-cli"
         {{- if eq .Values.resourcePreset "low" }}
@@ -573,17 +573,16 @@ spec:
         resources: {{- toYaml .Values.tier2_proxy.resources | nindent 10 }}
           {{- end }}
         {{- end }}
-  - repoURL: "https://github.com/ForumViriumHelsinki/TFDS_SIMPL-open_authentication_provider.git"
-    path: 'charts'
-    targetRevision: main
+    - repoURL: "https://code.europa.eu/api/v4/projects/{{ .Values.auth_provider.projectID }}/packages/helm/stable"
+    path: ''
+    targetRevision: {{ .Values.auth_provider.targetRevision }}
+    chart: {{ .Values.auth_provider.chart_name }}
     helm:
       valueFiles:
         {{- range .Values.auth_provider.valueFiles }}
         - $values/app-values/auth-provider/{{ . }}
         {{- end }}
       values: |
-        image:
-          tag: "{{ .Values.auth_provider.targetRevision }}"
         podAnnotations:
           vault.security.banzaicloud.io/vault-addr: "https://secrets.{{ .Values.namespaceTag.common }}.{{ .Values.domainSuffix }}"
           vault.security.banzaicloud.io/vault-role: {{ .Values.secrets.role }}
@@ -664,7 +663,7 @@ spec:
         - name: KEYCLOAK_URL
           value: "https://participant.be.{{ .Values.namespaceTag.dataprovider }}.{{ .Values.domainSuffix }}/auth"
         - name: KEYCLOAK_REALM
-          value: "participant" 
+          value: "participant"
         - name: KEYCLOAK_CLIENT_ID
           value: "frontend-cli"
         {{- if eq .Values.resourcePreset "low" }}
@@ -677,7 +676,7 @@ spec:
         resources: {{- toYaml .Values.auth_provider_fe.resources | nindent 10 }}
           {{- end }}
         {{- end }}
-  {{- if .Values.sd_ui.enabled }}      
+  {{- if .Values.sd_ui.enabled }}
   - repoURL: "https://code.europa.eu/api/v4/projects/{{ .Values.sd_ui.projectID }}/packages/helm/stable"
     path: ''
     targetRevision: {{ .Values.sd_ui.targetRevision }}
@@ -714,8 +713,8 @@ spec:
         resources: {{- toYaml .Values.sd_ui.resources | nindent 10 }}
           {{- end }}
         {{- end }}
-  {{- end }}  
-  {{- if .Values.simpl_edc.enabled }}      
+  {{- end }}
+  {{- if .Values.simpl_edc.enabled }}
   - repoURL: "https://code.europa.eu/api/v4/projects/{{ .Values.simpl_edc.projectID }}/packages/helm/stable"
     path: ''
     targetRevision: {{ .Values.simpl_edc.targetRevision }}
@@ -750,7 +749,7 @@ spec:
           {{- end }}
         {{- end }}
   {{- end }}
-  {{- if .Values.edc_connector_adapter.enabled }}      
+  {{- if .Values.edc_connector_adapter.enabled }}
   - repoURL: "https://code.europa.eu/api/v4/projects/{{ .Values.edc_connector_adapter.projectID }}/packages/helm/stable"
     path: ''
     targetRevision: {{ .Values.edc_connector_adapter.targetRevision }}
@@ -861,7 +860,7 @@ spec:
         {{- range .Values.stubs.valueFiles }}
         - $values/app-values/stubs/{{ . }}
         {{- end }}
-  {{- if .Values.files.enabled }}      
+  {{- if .Values.files.enabled }}
   - repoURL: "https://code.europa.eu/api/v4/projects/{{ .Values.files.projectID }}/packages/helm/stable"
     path: ''
     targetRevision: {{ .Values.files.targetRevision }}
@@ -1071,7 +1070,7 @@ spec:
       valueFiles:
         {{- range .Values.infrastructure_fe.valueFiles }}
         - $values/app-values/infrastructure-fe/{{ . }}
-        {{- end }}      
+        {{- end }}
       values: |
         namespace: {{ .Values.cluster.namespace }}
         env:
