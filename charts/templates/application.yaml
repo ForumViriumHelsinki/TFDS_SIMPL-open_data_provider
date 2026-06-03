@@ -573,7 +573,7 @@ spec:
         resources: {{- toYaml .Values.tier2_proxy.resources | nindent 10 }}
           {{- end }}
         {{- end }}
-    - repoURL: "https://code.europa.eu/api/v4/projects/{{ .Values.auth_provider.projectID }}/packages/helm/stable"
+  - repoURL: "https://code.europa.eu/api/v4/projects/{{ .Values.auth_provider.projectID }}/packages/helm/stable"
     path: ''
     targetRevision: {{ .Values.auth_provider.targetRevision }}
     chart: {{ .Values.auth_provider.chart_name }}
