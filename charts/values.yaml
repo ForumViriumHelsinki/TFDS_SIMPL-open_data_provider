@@ -28,7 +28,6 @@ secrets:
   secretEngine: ${SECRETENGINE}
   role: ${SECRETROLE}
 
-# NOTE: Remove test configurations!
 keycloak:
   enabled: true
   repo_URL: https://charts.bitnami.com/bitnami
