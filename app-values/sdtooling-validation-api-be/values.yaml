@@ -1,25 +1,20 @@
-#Service port of component SD-Tooling-Api-Validation
-creationWizardApiValidationServicePort: 8080
+#Domain associated with Cluster
+domain: integrated.simpl-europe.eu
 
-#Container port of component SD-Tooling-Api-Validation
-creationWizardApiValidationContainerPort: 8080
+# enable ingress only for development purpose
+# do not expose this service in a production environment
+ingress:
+  enabled: false
 
-#specify 'dev' for dev environment or 'dev-int' for integration environment
-vaultEnvIdentifier: dev-int
+log4j:
+  level:
+    # logging level for all logs excluding the specific ones
+    root: INFO
+    # logging level for application components only
+    app: DEBUG
+    # logging level for feign clients only
+    feign: DEBUG
 
-#specify 'dev' for dev environment or 'int' for integration environment 
-domainUrlEnvIdentifier: int
-
-#Domain associated with Dev Cluster (don't modify it)
-domain: dataprovider03.int.simpl-europe.eu
-
-#ID of persistentVolumeClaims associated with NFS Storage
-schemaVolumeClaim: nfs-storage-pvc-sd
-#Mount path used for schema storage
-schemaPvcMountPath: /data
-
-serviceAccount:
-  name: sdtooling-validation-api-be-service-account
-
-openTelemetry:
-  disabled: false
+# comma separated list of servers url to be used by swagger
+openapiConfig:
+  servers: https://t1.data1-provider.integrated.simpl-europe.eu/sd-validation

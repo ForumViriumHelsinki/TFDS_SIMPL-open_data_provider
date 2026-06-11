@@ -1,24 +1,51 @@
-# specify 'dev' for dev environment or 'int' for integration environment
-domainUrlEnvIdentifier: int
+#Domain associated with Cluster
+domain: integrated.simpl-europe.eu
 
-serviceAccount:
-   # optional service account prefix
-   prefix:
-
-openTelemetry:
-  # disables the OpenTelemetry SDK (true on local dev)   
-  disabled: false
-  # used to identify the environment
-  environment: int
+# enable ingress only for development purpose
+# do not expose this service in a production environment
+ingress:
+  enabled: false
 
 profile: provider
 
+# comma separated list of servers url to be used by swagger
+openapiConfig:
+  servers: https://edc-connector-adapter.integrated.simpl-europe.eu
+
+log4j:
+  level:
+    # logging level for all logs excluding the specific ones
+    root: INFO
+    # logging level for application components only
+    app: DEBUG
+    # logging level for feign clients only
+    feign: DEBUG
+
+web:
+  mvc:
+    cors:
+      # optional allowed origins for cross calls (list separed by comma or * to allow all origins)
+      # if empty no cross calls are allowed
+      allowedOrigins: ""
+
+    bearerToken:
+      # if true a JWT token must be present as Bearer in any request
+      required: true
+      # optional list (comma separated) of allowed paths (ant matcher expressions) to skip JWT token check (ex: actuator health paths)
+      allowedPaths: "/actuator/health/*"
+
+
+#########################################################################
+# 'provider' profile only
+#########################################################################
+
 edcConnector:
+  # url to the provider EDC connector management port (internal service)
+  baseUrl: http://simpl-edc-service:29193
+  #baseUrl: https://edc-provider.dev.simpl-europe.eu
+  # tier2 url to the provider EDC connector service behind the TLS gateway (ending with the route context name)
+  # this will be enriched in the SD json by enrichAndValidate API
+  tier2BaseUrl: https://tls.participant.dataprovider01.integrated.simpl-europe.eu/edc/protocol
+  #tier2BaseUrl: https://edc-provider.dev.simpl-europe.eu/protocol
   # the participant id to be used as assigner in policies as expected by the EDC connector on contract negotiation
   participantId: provider
-  baseUrl: http://simpl-edc-service:19193
-
-appJarPath: "/home/simpluser/app.jar"
-
-ingress:
-  enabled: false

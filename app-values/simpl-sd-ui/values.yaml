@@ -61,11 +61,11 @@ resources:
 
 livenessProbe:
   httpGet:
-    path: /
+    path: /status
     port: http
 readinessProbe:
   httpGet:
-    path: /
+    path: /status
     port: http
 
 autoscaling:
@@ -97,4 +97,4 @@ affinity: {}
 env:
   PUBLIC_AUTH_KEYCLOAK_REALM: "participant"
   PUBLIC_AUTH_KEYCLOAK_CLIENT_ID: "frontend-cli"
-  PUBLIC_CREATION_WIZARD_API_VERSION: "v1"
+  PUBLIC_CREATION_WIZARD_API_VERSION: "v2"

@@ -1,7 +1,13 @@
 replicaCount: 1
 
 service:
-  port: 8080
+  type: ClusterIP
+  port: 80
+
+resources:
+  limits:
+    cpu: "500m"
+    memory: "512Mi"
 
 ingress:
   secretName: simpl-tls-files

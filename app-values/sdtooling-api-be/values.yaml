@@ -2,7 +2,7 @@ serviceAccount:
   name: sdtooling-api-be-service-account
 
 # ID of persistentVolumeClaims associated with NFS Storage
-schemaVolumeClaim: nfs-storage-pvc-sd
+schemaVolumeClaim: nfs-storage-pvc
 
 # configuration for connectivity between SD-Tooling-Api-Be and SD-Tooling-Api-Validation
 validation:
@@ -17,6 +17,10 @@ connectorAdapter:
 authenticationProvider:
   service:
     url: http://authentication-provider:8080
+
+# absolute path to the schema repository synced by the schema-synch-adapter
+schemaSyncService:
+  repositoryPath: /home/simpluser/data/schemas/provider
 
 openTelemetry:
   disabled: true
@@ -36,3 +40,13 @@ federatedCatalogue:
 
 ingress:
   enabled: false
+
+resourceDescription:
+  id:
+    # If true, always generates and overwrites any existing "@id" on resource description creation.
+    # If false, generates a new "@id" only when it is absent or blank, preserving any value already set.
+    forceGenerate: true
+    # Optional prefix prepended to the generated UUID when building the resource ID.
+    # If empty, only the UUID is used as the resource ID.
+    prefix: "web:did:"
+
