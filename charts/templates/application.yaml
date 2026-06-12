@@ -1005,6 +1005,7 @@ spec:
         {{- end }}
       releaseName: {{ .Values.xfsc_advsearch_be.nameOverride }}
 
+  {{- if .Values.monitoring.enabled }}
   - repoURL: "https://code.europa.eu/api/v4/projects/{{ .Values.monitoring.projectID }}/packages/helm/stable"
     targetRevision: {{ .Values.monitoring.targetRevision }}
     chart: {{ .Values.monitoring.chart_name }}
@@ -1030,3 +1031,4 @@ spec:
           resources: {{- toYaml .Values.monitoring.resources.filebeat | nindent 12 }}
             {{- end }}
           {{- end }}
+  {{- end }}
