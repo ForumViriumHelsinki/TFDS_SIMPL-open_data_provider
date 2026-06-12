@@ -40,6 +40,8 @@ spec:
         defaultInitContainers:
           prepareWriteDirs:
             enabled: false
+        command:
+          - /opt/keycloak/bin/kc.sh
         args:
           - start
           - --import-realm
@@ -56,6 +58,8 @@ spec:
         podAnnotations:
           vault.security.banzaicloud.io/vault-addr: "https://secrets.{{ .Values.namespaceTag.common }}.{{ .Values.domainSuffix }}"
           vault.security.banzaicloud.io/vault-role: {{ .Values.secrets.role }}
+          vault.security.banzaicloud.io/vault-path: kubernetes
+          vault.security.banzaicloud.io/vault-skip-verify: "true"
         auth:
           adminPassword: vault:{{ .Values.secrets.secretEngine }}/data/{{ .Values.cluster.namespace }}-keycloak#admin
         externalDatabase:
@@ -153,6 +157,8 @@ spec:
         podAnnotations:
           vault.security.banzaicloud.io/vault-addr: "https://secrets.{{ .Values.namespaceTag.common }}.{{ .Values.domainSuffix }}"
           vault.security.banzaicloud.io/vault-role: {{ .Values.secrets.role }}
+          vault.security.banzaicloud.io/vault-path: kubernetes
+          vault.security.banzaicloud.io/vault-skip-verify: "true"
         appConfig:
           management:
             otlp:
@@ -232,6 +238,8 @@ spec:
         podAnnotations:
           vault.security.banzaicloud.io/vault-addr: "https://secrets.{{ .Values.namespaceTag.common }}.{{ .Values.domainSuffix }}"
           vault.security.banzaicloud.io/vault-role: {{ .Values.secrets.role }}
+          vault.security.banzaicloud.io/vault-path: kubernetes
+          vault.security.banzaicloud.io/vault-skip-verify: "true"
         hostT1: participant.be.{{ .Values.namespaceTag.dataprovider }}.{{ .Values.domainSuffix }}
         authorityHostT2: tls.authority.{{ .Values.namespaceTag.authority }}.{{ .Values.authorityDomainSuffix }}
         global:
@@ -468,6 +476,8 @@ spec:
         podAnnotations:
           vault.security.banzaicloud.io/vault-addr: "https://secrets.{{ .Values.namespaceTag.common }}.{{ .Values.domainSuffix }}"
           vault.security.banzaicloud.io/vault-role: {{ .Values.secrets.role }}
+          vault.security.banzaicloud.io/vault-path: kubernetes
+          vault.security.banzaicloud.io/vault-skip-verify: "true"
         env:
         - name: LOGGING_LEVEL_EU_EUROPA_EC_SIMPL
           value: "DEBUG"
@@ -544,6 +554,8 @@ spec:
           podAnnotations:
             vault.security.banzaicloud.io/vault-addr: "https://secrets.{{ .Values.namespaceTag.common }}.{{ .Values.domainSuffix }}"
             vault.security.banzaicloud.io/vault-role: {{ .Values.secrets.role }}
+            vault.security.banzaicloud.io/vault-path: kubernetes
+            vault.security.banzaicloud.io/vault-skip-verify: "true"
           {{- if .Values.redis.resourcesPreset }}
           resourcesPreset: {{ .Values.redis.resourcesPreset }}
           {{- end }}
@@ -611,8 +623,8 @@ spec:
           hashicorp:
             service: "https://secrets.{{ .Values.namespaceTag.common }}.{{ .Values.domainSuffix }}"
             role: {{ .Values.secrets.role }}
-          secretEngine: /v1/{{ .Values.secrets.secretEngine }}/data
-          secretConfigPath: "/v1/{{ .Values.secrets.secretEngine }}/data/{{ .Values.cluster.namespace }}-infra-adapter-simpl-backend"
+          secretEngine: {{ .Values.secrets.secretEngine }}/data
+          secretConfigPath: "{{ .Values.secrets.secretEngine }}/data/{{ .Values.cluster.namespace }}-infra-adapter-simpl-backend"
           {{- if eq .Values.resourcePreset "low" }}
           resources:
             requests:
@@ -822,6 +834,8 @@ spec:
         podAnnotations:
           vault.security.banzaicloud.io/vault-addr: "https://secrets.{{ .Values.namespaceTag.common }}.{{ .Values.domainSuffix }}"
           vault.security.banzaicloud.io/vault-role: {{ .Values.secrets.role }}
+          vault.security.banzaicloud.io/vault-path: kubernetes
+          vault.security.banzaicloud.io/vault-skip-verify: "true"
         postgres:
           url: "jdbc:postgresql://pg-cluster.{{ .Values.cluster.commonToolsNamespace }}.svc.cluster.local:5432/{{ .Values.cluster.namespace }}_schemasyncadapter?ssl=false"
           username: "{{ .Values.namespaceTag.dataprovider }}_schemasyncadapter"
