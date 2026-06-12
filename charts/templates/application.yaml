@@ -623,8 +623,8 @@ spec:
         hashicorp:
           service: "https://secrets.{{ .Values.namespaceTag.common }}.{{ .Values.domainSuffix }}"
           role: {{ .Values.secrets.role }}
-        secretEngine: {{ .Values.secrets.secretEngine }}/data
-        secretConfigPath: "{{ .Values.secrets.secretEngine }}/data/{{ .Values.cluster.namespace }}-infra-adapter-simpl-backend"
+        secretEngine: /v1/{{ .Values.secrets.secretEngine }}/data
+        secretConfigPath: "/v1/{{ .Values.secrets.secretEngine }}/data/{{ .Values.cluster.namespace }}-infra-adapter-simpl-backend"
         {{- if eq .Values.resourcePreset "low" }}
         resources:
           requests:
