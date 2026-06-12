@@ -729,7 +729,6 @@ spec:
           annotations:
             cert-manager.io/cluster-issuer: {{ .Values.cluster.issuer }}
         env:
-          HOST: "sd-ui.{{ .Values.namespaceTag.dataprovider }}.{{ .Values.domainSuffix }}"
           PUBLIC_AUTH_KEYCLOAK_SERVER_URL: "https://participant.be.{{ .Values.namespaceTag.dataprovider }}.{{ .Values.domainSuffix }}"
           PUBLIC_CREATION_WIZARD_API_URL: "https://participant.be.{{ .Values.namespaceTag.dataprovider }}.{{ .Values.domainSuffix }}/sdtooling-api"
           PUBLIC_SIGNER_URL: "https://participant.be.{{ .Values.namespaceTag.dataprovider }}.{{ .Values.domainSuffix }}/signer"
