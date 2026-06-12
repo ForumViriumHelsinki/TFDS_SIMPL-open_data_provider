@@ -1,14 +1,14 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: 'dataprovider-deployer'           # name of the deploying app in argocd
+  name: "dataprovider-deployer" # name of the deploying app in argocd
   namespace: argocd
 spec:
   project: default
   source:
-    repoURL: 'https://github.com/ForumViriumHelsinki/TFDS_SIMPL-open_data_provider.git'
+    repoURL: "https://github.com/ForumViriumHelsinki/TFDS_SIMPL-open_data_provider.git"
     path: charts
-    targetRevision: main                   # version of package
+    targetRevision: main # version of package
     helm:
       values: |
         singleNode: true
@@ -25,7 +25,7 @@ spec:
         authorityDomainSuffix: ds.helsinki.tfds.io    # last part of fqdn for the governance authority cluster
         resourcePreset: low             # set to "low" to disable requests of resources
         argocd:
-          appname: dataprovider           # name of generated argocd app 
+          appname: dataprovider           # name of generated argocd app
           namespace: argocd                 # namespace of your argocd
         cluster:
           address: https://kubernetes.default.svc
@@ -35,16 +35,8 @@ spec:
         secrets:
           role: example-role                # role created in OpenBao for access
           secretEngine: example             # secret engine name created in OpenBao
-        crossplane:
-          enabled: false                    # Set to true only if deploying on supported cloud providers (IONOS, OVH) to allow the agent to auto-provision infrastructure
-          kafka:
-            username: user                  # name should be: namespace_infrabe e.g.: dataprovider01_infrabe
-            password: pass                  # take the password from common01-kafka-credentials OpenBao secret, key dataprovider01_infrabe
-          gitea:
-            username: gitops_test           # username of gitea
-            password: pass                  # password of gitea - the variable can take on any value (set it to your preference)
         monitoring:
           enabled: false                     # should monitoring be enabled
   destination:
-    server: 'https://kubernetes.default.svc'
-    namespace: dataprovider               # where the package will be deployed
+    server: "https://kubernetes.default.svc"
+    namespace: dataprovider # where the package will be deployed
