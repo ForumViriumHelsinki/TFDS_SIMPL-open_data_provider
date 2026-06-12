@@ -605,145 +605,143 @@ spec:
   {{- end }}
 
   - repoURL: "https://code.europa.eu/api/v4/projects/{{ .Values.signer.projectID }}/packages/helm/stable"
-      targetRevision: {{ .Values.signer.targetRevision }}
-      chart: {{ .Values.signer.chart_name }}
-      helm:
-        valueFiles:
-          {{- range .Values.signer.valueFiles }}
-          - $values/app-values/Signer/{{ . }}
+    targetRevision: {{ .Values.signer.targetRevision }}
+    chart: {{ .Values.signer.chart_name }}
+    helm:
+      valueFiles:
+        {{- range .Values.signer.valueFiles }}
+        - $values/app-values/Signer/{{ . }}
+        {{- end }}
+      values: |
+        serviceAccount:
+          name: "{{ .Values.signer.serviceAccountName }}"
+        ingress:
+          enabled: false
+          frontendDomain: signer.{{ .Values.namespaceTag.dataprovider }}.{{ .Values.domainSuffix }}
+          annotations:
+            cert-manager.io/cluster-issuer: {{ .Values.cluster.issuer }}
+        hashicorp:
+          service: "https://secrets.{{ .Values.namespaceTag.common }}.{{ .Values.domainSuffix }}"
+          role: {{ .Values.secrets.role }}
+        secretEngine: {{ .Values.secrets.secretEngine }}/data
+        secretConfigPath: "{{ .Values.secrets.secretEngine }}/data/{{ .Values.cluster.namespace }}-infra-adapter-simpl-backend"
+        {{- if eq .Values.resourcePreset "low" }}
+        resources:
+          requests:
+            cpu: "10m"
+            memory: "32Mi"
+        {{- else }}
+          {{- if .Values.signer.resources }}
+        resources: {{- toYaml .Values.signer.resources | nindent 10 }}
           {{- end }}
-        values: |
-          serviceAccount:
-            name: "{{ .Values.signer.serviceAccountName }}"
-          ingress:
-            enabled: false
-            frontendDomain: signer.{{ .Values.namespaceTag.dataprovider }}.{{ .Values.domainSuffix }}
-            annotations:
-              cert-manager.io/cluster-issuer: {{ .Values.cluster.issuer }}
-          hashicorp:
-            service: "https://secrets.{{ .Values.namespaceTag.common }}.{{ .Values.domainSuffix }}"
-            role: {{ .Values.secrets.role }}
-          secretEngine: {{ .Values.secrets.secretEngine }}/data
-          secretConfigPath: "{{ .Values.secrets.secretEngine }}/data/{{ .Values.cluster.namespace }}-infra-adapter-simpl-backend"
-          {{- if eq .Values.resourcePreset "low" }}
-          resources:
-            requests:
-              cpu: "10m"
-              memory: "32Mi"
-          {{- else }}
-            {{- if .Values.signer.resources }}
-          resources: {{- toYaml .Values.signer.resources | nindent 10 }}
-            {{- end }}
-          {{- end }}
+        {{- end }}
 
-    - repoURL: "https://code.europa.eu/api/v4/projects/{{ .Values.simpl_catalogue_client.projectID }}/packages/helm/stable"
-      targetRevision: {{ .Values.simpl_catalogue_client.targetRevision }}
-      chart: {{ .Values.simpl_catalogue_client.chart_name }}
-      helm:
-        valueFiles:
-          {{- range .Values.simpl_catalogue_client.valueFiles }}
-          - $values/app-values/simpl-catalogue-client/{{ . }}
+  - repoURL: "https://code.europa.eu/api/v4/projects/{{ .Values.simpl_catalogue_client.projectID }}/packages/helm/stable"
+    targetRevision: {{ .Values.simpl_catalogue_client.targetRevision }}
+    chart: {{ .Values.simpl_catalogue_client.chart_name }}
+    helm:
+      valueFiles:
+        {{- range .Values.simpl_catalogue_client.valueFiles }}
+        - $values/app-values/simpl-catalogue-client/{{ . }}
+        {{- end }}
+      values: |
+        env:
+          PUBLIC_AUTH_KEYCLOAK_SERVER_URL: "https://participant.be.{{ .Values.namespaceTag.dataprovider }}.{{ .Values.domainSuffix }}"
+          PUBLIC_FC_DATA_URL: "https://tls.authority.{{ .Values.namespaceTag.authority }}.{{ .Values.authorityDomainSuffix }}/fc"
+          PUBLIC_SEARCH_API_URL: "https://participant.be.{{ .Values.namespaceTag.dataprovider }}.{{ .Values.domainSuffix }}/xfsc-advsearch-be"
+          PUBLIC_CONTRACT_CONSUMPTION_API_URL: "https://participant.be.{{ .Values.namespaceTag.dataprovider }}.{{ .Values.domainSuffix }}/contract-consumption"
+        ingress:
+          hosts:
+            - host: catalogue-ui.{{ .Values.namespaceTag.dataprovider }}.{{ .Values.domainSuffix }}
+              paths:
+              - path: /
+                pathType: ImplementationSpecific
+          tls:
+            - secretName: catalogue-ui-tld-secret
+              hosts:
+                - catalogue-ui.{{ .Values.namespaceTag.dataprovider }}.{{ .Values.domainSuffix }}
+          annotations:
+            cert-manager.io/cluster-issuer: {{ .Values.cluster.issuer }}
+        {{- if eq .Values.resourcePreset "low" }}
+        resources:
+          requests:
+            cpu: "10m"
+            memory: "32Mi"
+        {{- else }}
+          {{- if .Values.simpl_catalogue_client.resources }}
+        resources: {{- toYaml .Values.simpl_catalogue_client.resources | nindent 10 }}
           {{- end }}
-        values: |
-          env:
-            PUBLIC_AUTH_KEYCLOAK_SERVER_URL: "https://participant.be.{{ .Values.namespaceTag.dataprovider }}.{{ .Values.domainSuffix }}"
-            PUBLIC_FC_DATA_URL: "https://tls.authority.{{ .Values.namespaceTag.authority }}.{{ .Values.authorityDomainSuffix }}/fc"
-            PUBLIC_SEARCH_API_URL: "https://participant.be.{{ .Values.namespaceTag.dataprovider }}.{{ .Values.domainSuffix }}/xfsc-advsearch-be"
-            PUBLIC_CONTRACT_CONSUMPTION_API_URL: "https://participant.be.{{ .Values.namespaceTag.dataprovider }}.{{ .Values.domainSuffix }}/contract-consumption"
-          ingress:
-            hosts:
-              - host: catalogue-ui.{{ .Values.namespaceTag.dataprovider }}.{{ .Values.domainSuffix }}
-                paths:
-                - path: /
-                  pathType: ImplementationSpecific
-            tls:
-              - secretName: catalogue-ui-tld-secret
-                hosts:
-                  - catalogue-ui.{{ .Values.namespaceTag.dataprovider }}.{{ .Values.domainSuffix }}
-            annotations:
-              cert-manager.io/cluster-issuer: {{ .Values.cluster.issuer }}
-          {{- if eq .Values.resourcePreset "low" }}
-          resources:
-            requests:
-              cpu: "10m"
-              memory: "32Mi"
-          {{- else }}
-            {{- if .Values.simpl_catalogue_client.resources }}
-          resources: {{- toYaml .Values.simpl_catalogue_client.resources | nindent 10 }}
-            {{- end }}
-          {{- end }}
+        {{- end }}
 
-    - repoURL: "https://code.europa.eu/api/v4/projects/{{ .Values.simpl_edc.projectID }}/packages/helm/stable"
-      targetRevision: {{ .Values.simpl_edc.targetRevision }}
-      chart: {{ .Values.simpl_edc.chart_name }}
-      helm:
-        releaseName: {{ .Values.simpl_edc.nameOverride }}
-        valueFiles:
-          {{- range .Values.simpl_edc.valueFiles }}
-          - $values/app-values/simpl-edc/{{ . }}
+  - repoURL: "https://code.europa.eu/api/v4/projects/{{ .Values.simpl_edc.projectID }}/packages/helm/stable"
+    targetRevision: {{ .Values.simpl_edc.targetRevision }}
+    chart: {{ .Values.simpl_edc.chart_name }}
+    helm:
+      releaseName: {{ .Values.simpl_edc.nameOverride }}
+      valueFiles:
+        {{- range .Values.simpl_edc.valueFiles }}
+        - $values/app-values/simpl-edc/{{ . }}
+        {{- end }}
+      values: |
+        deployment:
+          host: {{ .Values.simpl_edc.nameOverride }}-service
+          callbackAddress: "https://tls.participant.{{ .Values.namespaceTag.dataprovider }}.{{ .Values.domainSuffix }}/edc"
+        env:
+          datasourceurl: "jdbc:postgresql://pg-cluster.{{ .Values.cluster.commonToolsNamespace }}.svc.cluster.local:5432/{{ .Values.cluster.namespace }}_edc"
+          edcParticipantId: {{ .Values.cluster.namespace }}
+        postgresql:
+          username: {{ .Values.cluster.namespace }}_edc
+        hashicorp:
+          role: {{ .Values.secrets.role }}
+          service: "https://secrets.{{ .Values.namespaceTag.common }}.{{ .Values.domainSuffix }}"
+        secretEngine: /v1/{{ .Values.secrets.secretEngine }}/data
+        secretConfigPath: "/v1/{{ .Values.secrets.secretEngine }}/data/{{ .Values.cluster.namespace }}-simpl-edc"
+        {{- if eq .Values.resourcePreset "low" }}
+        resources:
+          requests:
+            cpu: "10m"
+            memory: "32Mi"
+        {{- else }}
+          {{- if .Values.simpl_edc.resources }}
+        resources: {{- toYaml .Values.simpl_edc.resources | nindent 10 }}
           {{- end }}
-        values: |
-          deployment:
-            host: {{ .Values.simpl_edc.nameOverride }}-service
-            callbackAddress: "https://tls.participant.{{ .Values.namespaceTag.dataprovider }}.{{ .Values.domainSuffix }}/edc"
-          env:
-            datasourceurl: "jdbc:postgresql://pg-cluster.{{ .Values.cluster.commonToolsNamespace }}.svc.cluster.local:5432/{{ .Values.cluster.namespace }}_edc"
-            edcParticipantId: {{ .Values.cluster.namespace }}
-          postgresql:
-            username: {{ .Values.cluster.namespace }}_edc
-          hashicorp:
-            role: {{ .Values.secrets.role }}
-            service: "https://secrets.{{ .Values.namespaceTag.common }}.{{ .Values.domainSuffix }}"
-          secretEngine: /v1/{{ .Values.secrets.secretEngine }}/data
-          secretConfigPath: "/v1/{{ .Values.secrets.secretEngine }}/data/{{ .Values.cluster.namespace }}-simpl-edc"
-          {{- if eq .Values.resourcePreset "low" }}
-          resources:
-            requests:
-              cpu: "10m"
-              memory: "32Mi"
-          {{- else }}
-            {{- if .Values.simpl_edc.resources }}
-          resources: {{- toYaml .Values.simpl_edc.resources | nindent 10 }}
-            {{- end }}
-          {{- end }}
+        {{- end }}
 
-    - repoURL: "https://code.europa.eu/api/v4/projects/{{ .Values.sd_ui.projectID }}/packages/helm/stable"
-      targetRevision: {{ .Values.sd_ui.targetRevision }}
-      chart: {{ .Values.sd_ui.chart_name }}
-      helm:
-        valueFiles:
-          {{- range .Values.sd_ui.valueFiles }}
-          - $values/app-values/simpl-sd-ui/{{ . }}
+  - repoURL: "https://code.europa.eu/api/v4/projects/{{ .Values.sd_ui.projectID }}/packages/helm/stable"
+    targetRevision: {{ .Values.sd_ui.targetRevision }}
+    chart: {{ .Values.sd_ui.chart_name }}
+    helm:
+      valueFiles:
+        {{- range .Values.sd_ui.valueFiles }}
+        - $values/app-values/simpl-sd-ui/{{ . }}
+        {{- end }}
+      values: |
+        ingress:
+          hosts:
+            - host: sd-ui.{{ .Values.namespaceTag.dataprovider }}.{{ .Values.domainSuffix }}
+              paths:
+              - path: /
+                pathType: ImplementationSpecific
+          tls:
+            - secretName: sd-ui-tld-secret
+              hosts:
+                - sd-ui.{{ .Values.namespaceTag.dataprovider }}.{{ .Values.domainSuffix }}
+          annotations:
+            cert-manager.io/cluster-issuer: {{ .Values.cluster.issuer }}
+        env:
+          PUBLIC_AUTH_KEYCLOAK_SERVER_URL: "https://participant.be.{{ .Values.namespaceTag.dataprovider }}.{{ .Values.domainSuffix }}"
+          PUBLIC_CREATION_WIZARD_API_URL: "https://participant.be.{{ .Values.namespaceTag.dataprovider }}.{{ .Values.domainSuffix }}/sdtooling-api"
+          PUBLIC_SIGNER_URL: "https://participant.be.{{ .Values.namespaceTag.dataprovider }}.{{ .Values.domainSuffix }}/signer"
+        {{- if eq .Values.resourcePreset "low" }}
+        resources:
+          requests:
+            cpu: "10m"
+            memory: "32Mi"
+        {{- else }}
+          {{- if .Values.sd_ui.resources }}
+        resources: {{- toYaml .Values.sd_ui.resources | nindent 10 }}
           {{- end }}
-        values: |
-          ingress:
-            hosts:
-              - host: sd-ui.{{ .Values.namespaceTag.dataprovider }}.{{ .Values.domainSuffix }}
-                paths:
-                - path: /
-                  pathType: ImplementationSpecific
-            tls:
-              - secretName: sd-ui-tld-secret
-                hosts:
-                  - sd-ui.{{ .Values.namespaceTag.dataprovider }}.{{ .Values.domainSuffix }}
-            annotations:
-              cert-manager.io/cluster-issuer: {{ .Values.cluster.issuer }}
-          env:
-            PUBLIC_AUTH_KEYCLOAK_SERVER_URL: "https://participant.be.{{ .Values.namespaceTag.dataprovider }}.{{ .Values.domainSuffix }}"
-            PUBLIC_CREATION_WIZARD_API_URL: "https://participant.be.{{ .Values.namespaceTag.dataprovider }}.{{ .Values.domainSuffix }}/sdtooling-api"
-            PUBLIC_SIGNER_URL: "https://participant.be.{{ .Values.namespaceTag.dataprovider }}.{{ .Values.domainSuffix }}/signer"
-          {{- if eq .Values.resourcePreset "low" }}
-          resources:
-            requests:
-              cpu: "10m"
-              memory: "32Mi"
-          {{- else }}
-            {{- if .Values.sd_ui.resources }}
-          resources: {{- toYaml .Values.sd_ui.resources | nindent 10 }}
-            {{- end }}
-          {{- end }}
-
-   # START POINT
+        {{- end }}
 
   - repoURL: "https://code.europa.eu/api/v4/projects/{{ .Values.edc_connector_adapter.projectID }}/packages/helm/stable"
     targetRevision: {{ .Values.edc_connector_adapter.targetRevision }}
