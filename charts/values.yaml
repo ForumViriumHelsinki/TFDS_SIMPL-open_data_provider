@@ -243,8 +243,7 @@ simpl_catalogue_client:
 sd_ui:
   enabled: true
   projectID: "923"
-  #targetRevision: "1.11.0"
-  targetRevision: "1.8.1"
+  targetRevision: "1.11.0"
   chart_name: sd-ui
   resources:
     requests:
