@@ -258,7 +258,7 @@ sd_ui:
 edc_connector_adapter:
   enabled: true
   projectID: "1091"
-  targetRevision: 1.15.0
+  targetRevision: 1.16.0
   chart_name: edc-connector-adapter
   nameOverride: edc-connector-adapter
   resources:
