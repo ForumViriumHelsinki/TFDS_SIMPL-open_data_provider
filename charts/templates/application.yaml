@@ -636,9 +636,9 @@ spec:
           {{- end }}
         {{- end }}
 
-  - repoURL: "https://code.europa.eu/api/v4/projects/{{ .Values.simpl_catalogue_client.projectID }}/packages/helm/stable"
+  - repoURL: {{ .Values.simpl_catalogue_client.repo_URL }}
+    path: {{ .Values.simpl_catalogue_client.path }}
     targetRevision: {{ .Values.simpl_catalogue_client.targetRevision }}
-    chart: {{ .Values.simpl_catalogue_client.chart_name }}
     helm:
       valueFiles:
         {{- range .Values.simpl_catalogue_client.valueFiles }}
@@ -707,9 +707,9 @@ spec:
           {{- end }}
         {{- end }}
 
-  - repoURL: "https://code.europa.eu/api/v4/projects/{{ .Values.sd_ui.projectID }}/packages/helm/stable"
+  - repoURL: {{ .Values.sd_ui.repo_URL }}
+    path: {{ .Values.sd_ui.path }}
     targetRevision: {{ .Values.sd_ui.targetRevision }}
-    chart: {{ .Values.sd_ui.chart_name }}
     helm:
       valueFiles:
         {{- range .Values.sd_ui.valueFiles }}

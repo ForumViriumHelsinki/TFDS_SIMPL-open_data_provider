@@ -211,7 +211,7 @@ signer:
 simpl_edc:
   enabled: true
   projectID: "920"
-  targetRevision: 1.0.25
+  targetRevision: 1.0.23
   chart_name: edc
   nameOverride: simpl-edc
   resources:
@@ -227,9 +227,9 @@ simpl_edc:
 
 simpl_catalogue_client:
   enabled: true
-  projectID: "937"
-  targetRevision: 2.6.0
-  chart_name: catalogue-ui
+  repo_URL: "https://github.com/ForumViriumHelsinki/TFDS-SIMPL-open-helm-charts.git"
+  path: "charts/catalogue-ui"
+  targetRevision: main
   resources:
     requests:
       cpu: "250m"
@@ -242,9 +242,9 @@ simpl_catalogue_client:
 
 sd_ui:
   enabled: true
-  projectID: "923"
-  targetRevision: 1.12.1
-  chart_name: sd-ui
+  repo_URL: "https://github.com/ForumViriumHelsinki/TFDS-SIMPL-open-helm-charts.git"
+  path: "charts/sd-ui"
+  targetRevision: main
   resources:
     requests:
       cpu: "500m"
@@ -258,7 +258,7 @@ sd_ui:
 edc_connector_adapter:
   enabled: true
   projectID: "1091"
-  targetRevision: 1.16.0
+  targetRevision: 1.15.0
   chart_name: edc-connector-adapter
   nameOverride: edc-connector-adapter
   resources:
