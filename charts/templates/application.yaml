@@ -730,6 +730,7 @@ spec:
           annotations:
             cert-manager.io/cluster-issuer: {{ .Values.cluster.issuer }}
         env:
+          PUBLIC_BASE_URL: "https://sd-ui.{{ .Values.namespaceTag.dataprovider }}.{{ .Values.domainSuffix }}"
           PUBLIC_ALLOWED_DOMAINS: "**.{{ .Values.domainSuffix }}"
           PUBLIC_AUTH_KEYCLOAK_SERVER_URL: "https://participant.be.{{ .Values.namespaceTag.dataprovider }}.{{ .Values.domainSuffix }}"
           PUBLIC_CREATION_WIZARD_API_URL: "https://participant.be.{{ .Values.namespaceTag.dataprovider }}.{{ .Values.domainSuffix }}/sdtooling-api"
