@@ -56,15 +56,6 @@ resources: {}
   #   cpu: 100m
   #   memory: 128Mi
 
-livenessProbe:
-  httpGet:
-    path: /status
-    port: http
-readinessProbe:
-  httpGet:
-    path: /status
-    port: http
-
 autoscaling:
   enabled: false
   minReplicas: 1
